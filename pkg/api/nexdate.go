@@ -10,7 +10,6 @@ import (
 
 const dateFormat = "20060102"
 
-// NextDate calculates the next date for a task based on the repeat rule
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	if repeat == "" {
 		return "", nil
@@ -26,9 +25,9 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 
 	switch {
 	case rule == "y":
-		// Annual repetition: always add at least one year
+
 		start = start.AddDate(1, 0, 0)
-		// Continue adding years until strictly after now
+
 		for !start.After(now) {
 			start = start.AddDate(1, 0, 0)
 		}
@@ -40,9 +39,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		if err != nil || interval < 1 || interval > 400 {
 			return "", fmt.Errorf("invalid interval: must be 1-400")
 		}
-		// Always add at least one interval
 		start = start.AddDate(0, 0, interval)
-		// Continue adding intervals until strictly after now
 		for !start.After(now) {
 			start = start.AddDate(0, 0, interval)
 		}
@@ -53,7 +50,6 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	return start.Format(dateFormat), nil
 }
 
-// nextDateHandler handles GET /api/nextdate?now=YYYYMMDD&date=YYYYMMDD&repeat=rule
 func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	nowStr := r.FormValue("now")
 	dateStr := r.FormValue("date")
